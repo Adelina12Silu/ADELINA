@@ -1,0 +1,78 @@
+# Função recursiva para calcular o VPL
+calcular_vpl <- function(fluxos, taxa, periodo = 1) {
+  # Base da recursão: se todos os fluxos foram processados
+  if (periodo > length(fluxos)) {
+    return(0)
+  }
+  
+  # Cálculo do VPL para o fluxo atual e chamada recursiva para o próximo
+  return(fluxos[periodo] / (1 + taxa)^periodo + calcular_vpl(fluxos, taxa, periodo + 1))
+}
+
+# Gerar fluxos de caixa simulados
+set.seed(123)  # Para reprodutibilidade
+fluxos_de_caixa <- rnorm(100, mean = 5000, sd = 1000)
+
+# Taxas de desconto a serem testadas
+taxas_desconto <- seq(0.01, 0.10, by = 0.01)
+
+# Matriz para armazenar resultados
+resultados <- matrix(NA, nrow = length(taxas_desconto), ncol = 2)
+colnames(resultados) <- c("Taxa de Desconto", "VPL")
+
+# Calcular o VPL para cada taxa de desconto
+for (i in seq_along(taxas_desconto)) {
+  taxa <- taxas_desconto[i]
+  vpl <- calcular_vpl(fluxos_de_caixa, taxa)
+  resultados[i, ] <- c(taxa, vpl)
+}
+
+# Transformar a matriz em um data frame para melhor visualização
+resultados_df <- as.data.frame(resultados)
+resultados_df$`VPL` <- as.numeric(resultados_df$`VPL`)  # Converter a coluna VPL para numérico
+
+# Mostrar os resultados
+print(resultados_df)
+
+.
+
+RESPOSTA exercicío do R
+
+
+> # Mostrar os resultados
+> print(resultados_df)
+   Taxa de Desconto       VPL
+1:             0.01- 319763.46
+2:             0.02- 218247.65
+3:              0.03- 159937.71
+4:              0.04- 124098.40
+5:              0.05- 100634.71
+6:              0.06-  84389.03
+7:              0.07-  72590.91
+8:              0.08-  63675.48
+9 :             0.09-  56714.70
+10:             0.10-  51132.44
+
+
+
+Análise Detalhada dos Resultados
+Usando rnorm(100, mean = 5000, sd = 1000) para criar um vetor de 100 fluxos de caixa com média 5000 e desvio padrão 1000.
+
+Taxa de Desconto (0.01 a 0.10):
+
+As taxas de desconto são variáveis de 1% (0.01) a 10% (0.10).
+Essas taxas refletem o custo do capital ou a taxa mínima que um investidor espera obter de um investimento.
+Valor Presente Líquido (VPL):
+
+O VPL representa o valor atual dos fluxos de caixa futuros, descontados pela taxa de desconto. Um VPL mais alto indica um investimento mais viável.
+Tendência Decrescente do VPL:
+
+VPL de 0.01: 319763.46
+Com uma taxa de desconto de 1%, os fluxos de caixa futuros são descontados levemente, resultando em um VPL alto.
+VPL de 0.10: 51132.44
+Com uma taxa de desconto de 10%, os fluxos de caixa são fortemente descontados, resultando em um VPL significativamente menor.
+
+      Interpretação da Queda do VPL
+Efeito do Desconto: A diminuição do VPL à medida que a taxa de desconto aumenta é uma característica comum em análises financeiras. Isso ocorre porque:
+Com taxas mais altas, os fluxos de caixa futuros têm menos valor no presente.
+Os investidores requerem uma maior taxa de retorno, o que resulta em uma avaliação mais conservadora dos fluxos de caixa futuros. 
