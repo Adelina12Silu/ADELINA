@@ -1,0 +1,96 @@
+class Investimento:
+    def __init__(self, nome, quantidade, valor_unitario):
+        self.nome = nome
+        self.quantidade = quantidade
+        self.valor_unitario = valor_unitario
+
+    def valor_total(self):
+        return self.quantidade * self.valor_unitario
+
+class Acao(Investimento):
+    def __init__(self, nome, quantidade, valor_unitario, dividendo=0):
+        super().__init__(nome, quantidade, valor_unitario)
+        self.dividendo = dividendo
+
+    def valor_total(self):
+        return super().valor_total() + (self.dividendo * self.quantidade)
+
+class Titulo(Investimento):
+    def __init__(self, nome, quantidade, valor_unitario, taxa_juros=0):
+        super().__init__(nome, quantidade, valor_unitario)
+        self.taxa_juros = taxa_juros
+
+    def valor_total(self):
+        juros = self.valor_unitario * self.taxa_juros * self.quantidade
+        return super().valor_total() + juros
+
+class FundoMutuo(Investimento):
+    def __init__(self, nome, quantidade, valor_unitario, taxa_administracao=0):
+        super().__init__(nome, quantidade, valor_unitario)
+        self.taxa_administracao = taxa_administracao
+
+    def valor_total(self):
+        total = super().valor_total()
+        return total - (total * self.taxa_administracao)
+
+class Portfolio:
+    def __init__(self):
+        self.investimentos = []
+
+    def adicionar_investimento(self, investimento):
+        self.investimentos.append(investimento)
+
+    def remover_investimento(self, nome):
+        for invest in self.investimentos:
+            if invest.nome == nome:
+                self.investimentos.remove(invest)
+                return f"{nome} removido do portfólio."
+        return f"{nome} não encontrado no portfólio."
+
+    def valor_total_portfolio(self):
+        return sum(invest.valor_total() for invest in self.investimentos)
+
+    def relatorio_portfolio(self):
+        relatorio = "Resumo do Portfólio:\n"
+        relatorio += "-----------------------------------\n"
+        for invest in self.investimentos:
+            relatorio += f"{invest.__class__.__name__}: {invest.nome}, Quantidade: {invest.quantidade}, Valor Total: R$ {invest.valor_total():.2f}\n"
+        relatorio += "-----------------------------------\n"
+        relatorio += f"Valor Total do Portfólio: R$ {self.valor_total_portfolio():.2f}\n"
+        return relatorio
+
+# Uso das classes
+meu_portfolio = Portfolio()
+meu_portfolio.adicionar_investimento(Acao("AAPL", 10, 150, dividendo=2))
+meu_portfolio.adicionar_investimento(Titulo("US Treasury", 5, 1000, taxa_juros=0.05))
+meu_portfolio.adicionar_investimento(FundoMutuo("Fundo A", 20, 50, taxa_administracao=0.01))
+
+# Exibir o relatório do portfólio
+print(meu_portfolio.relatorio_portfolio())
+
+# Remover um investimento e exibir o relatório novamente
+meu_portfolio.remover_investimento("AAPL")
+print(meu_portfolio.relatorio_portfolio())
+
+
+.
+Resumo do Portfólio:
+-----------------------------------
+Acao: AAPL, Quantidade: 10, Valor Total: R$ 1520.00
+Titulo: US Treasury, Quantidade: 5, Valor Total: R$ 5250.00
+FundoMutuo: Fundo A, Quantidade: 20, Valor Total: R$ 990.00
+-----------------------------------
+Valor Total do Portfólio: R$ 7760.00
+
+>>> # Remover um investimento e exibir o relatório novamente
+>>> meu_portfolio.remover_investimento("AAPL")
+'AAPL removido do portfólio.'
+>>> print(meu_portfolio.relatorio_portfolio())
+Resumo do Portfólio:
+-----------------------------------
+Titulo: US Treasury, Quantidade: 5, Valor Total: R$ 5250.00
+FundoMutuo: Fundo A, Quantidade: 20, Valor Total: R$ 990.00
+-----------------------------------
+Valor Total do Portfólio: R$ 6240.00
+
+>>>
