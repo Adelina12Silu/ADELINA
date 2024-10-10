@@ -38,13 +38,26 @@ class Portfolio:
         self.investimentos = []
 
     def adicionar_investimento(self, investimento):
-        self.investimentos.append(investimento)
+        if isinstance(investimento, Investimento):
+            self.investimentos.append(investimento)
+            return f"{investimento.nome} adicionado ao portfólio."
+        return "Erro: O objeto não é um investimento válido."
 
     def remover_investimento(self, nome):
         for invest in self.investimentos:
             if invest.nome == nome:
                 self.investimentos.remove(invest)
                 return f"{nome} removido do portfólio."
+        return f"{nome} não encontrado no portfólio."
+
+    def atualizar_investimento(self, nome, nova_quantidade=None, novo_valor_unitario=None):
+        for invest in self.investimentos:
+            if invest.nome == nome:
+                if nova_quantidade is not None:
+                    invest.quantidade = nova_quantidade
+                if novo_valor_unitario is not None:
+                    invest.valor_unitario = novo_valor_unitario
+                return f"{nome} atualizado com sucesso."
         return f"{nome} não encontrado no portfólio."
 
     def valor_total_portfolio(self):
@@ -61,19 +74,26 @@ class Portfolio:
 
 # Uso das classes
 meu_portfolio = Portfolio()
-meu_portfolio.adicionar_investimento(Acao("AAPL", 10, 150, dividendo=2))
-meu_portfolio.adicionar_investimento(Titulo("US Treasury", 5, 1000, taxa_juros=0.05))
-meu_portfolio.adicionar_investimento(FundoMutuo("Fundo A", 20, 50, taxa_administracao=0.01))
+print(meu_portfolio.adicionar_investimento(Acao("AAPL", 10, 150, dividendo=2)))
+print(meu_portfolio.adicionar_investimento(Titulo("US Treasury", 5, 1000, taxa_juros=0.05)))
+print(meu_portfolio.adicionar_investimento(FundoMutuo("Fundo A", 20, 50, taxa_administracao=0.01)))
 
 # Exibir o relatório do portfólio
 print(meu_portfolio.relatorio_portfolio())
 
 # Remover um investimento e exibir o relatório novamente
-meu_portfolio.remover_investimento("AAPL")
+print(meu_portfolio.remover_investimento("AAPL"))
+print(meu_portfolio.relatorio_portfolio())
+
+# Atualizar um investimento
+print(meu_portfolio.atualizar_investimento("US Treasury", nova_quantidade=6))
 print(meu_portfolio.relatorio_portfolio())
 
 
-.
+RESPOSTA DO DO EXERCICÍO
+
+ # Exibir o relatório do portfólio
+>>> print(meu_portfolio.relatorio_portfolio())
 Resumo do Portfólio:
 -----------------------------------
 Acao: AAPL, Quantidade: 10, Valor Total: R$ 1520.00
@@ -82,9 +102,10 @@ FundoMutuo: Fundo A, Quantidade: 20, Valor Total: R$ 990.00
 -----------------------------------
 Valor Total do Portfólio: R$ 7760.00
 
+>>> 
 >>> # Remover um investimento e exibir o relatório novamente
->>> meu_portfolio.remover_investimento("AAPL")
-'AAPL removido do portfólio.'
+>>> print(meu_portfolio.remover_investimento("AAPL"))
+AAPL removido do portfólio.
 >>> print(meu_portfolio.relatorio_portfolio())
 Resumo do Portfólio:
 -----------------------------------
@@ -93,4 +114,17 @@ FundoMutuo: Fundo A, Quantidade: 20, Valor Total: R$ 990.00
 -----------------------------------
 Valor Total do Portfólio: R$ 6240.00
 
->>>
+>>> 
+>>> # Atualizar um investimento
+>>> print(meu_portfolio.atualizar_investimento("US Treasury", nova_quantidade=6))
+US Treasury atualizado com sucesso.
+>>> print(meu_portfolio.relatorio_portfolio())
+Resumo do Portfólio:
+-----------------------------------
+Titulo: US Treasury, Quantidade: 6, Valor Total: R$ 6300.00
+FundoMutuo: Fundo A, Quantidade: 20, Valor Total: R$ 990.00
+-----------------------------------
+Valor Total do Portfólio: R$ 7290.00
+
+
+
